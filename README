@@ -1,0 +1,8 @@
+- main.c will work out the CLI
+- init.c will listen on appropriate port
+- parser.c will build the structs from the parsed http
+- handler.c will handle the request and build a response struct
+- response.c will respond to the request
+
+- http_constants.h will hold all http constants
+- structs.h

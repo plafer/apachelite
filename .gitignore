@@ -1,0 +1,5 @@
+# Don't commit temp files
+**/*~
+
+# Executable
+apachelite
