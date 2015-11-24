@@ -1,2 +1,2 @@
 all:
-	cc main.c util.c -Wall -g -o apachelite
+	cc -o apachelite main.c init.c util.c -Wall -g -lnsl -lresolv

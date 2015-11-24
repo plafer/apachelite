@@ -10,6 +10,7 @@ struct CLI_PARSER cli_parser = {"-p"};
 
 
 void print_usage(void);
+int is_valid_port(int port);
 
 #endif
 

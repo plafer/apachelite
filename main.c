@@ -10,6 +10,12 @@
 void print_usage(void)
 {
   printf("Usage: ./apachelite [-p PORT]\nDefaults to port 80.\n");
+  exit(1);
+}
+
+int is_valid_port(int port)
+{
+  return port >= 0 && port <= 65535;
 }
 
 int main(int argc, char **argv)
@@ -26,10 +32,12 @@ int main(int argc, char **argv)
       print_usage();
     }
 
-  //  int port = argc == 3 ? atoi(argv[2]) : 80;
-
-
-
-
+  int port = argc == 3 ? atoi(argv[2]) : 80;
+  if (!is_valid_port(port))
+    {
+      print_usage();
+    }
+  
+  create_server(port);
 }
 
