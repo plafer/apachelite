@@ -1,5 +1,3 @@
-#include <sys/types.h>
-#include <sys/socket.h>
 #include <netinet/in.h> /* sockaddr_in */
 #include <arpa/inet.h> /* htons */
 #include <string.h> /* memset */
@@ -8,8 +6,7 @@
 #include <stdlib.h>
 #include <unistd.h> /* close */
 #include "init.h"
-
-#define INC_BUFFER_SIZE 10000
+#include "handler.h"
 
 static const int BACKLOG = 10;
 
@@ -54,28 +51,13 @@ int create_server(int port)
   int new_connection;
   struct sockaddr_in ext_addr;
   unsigned int ext_addr_size = sizeof(struct sockaddr_in);
+
+  // Consider forking all new connections
   while ((new_connection = accept(listenersock,
 			       (struct sockaddr *) &ext_addr,
 			       &ext_addr_size)) != -1)
     {
-      
-      char inc_buffer[INC_BUFFER_SIZE];
-      int amount_received;
-      if ((amount_received = recv(new_connection, &inc_buffer,
-				  INC_BUFFER_SIZE, 0)) == 0)
-	{
-	  // connection is closed on other end
-	  close(new_connection);
-	  continue;
-	}
-      // TODO: Check if buffer is full
-      char *success_msg = "HTTP/1.0 200 OK\r\n"
-	"Content-type: text/html\r\n"
-	"Content-length: 15\r\n\r\n"
-	"Done with you!";
-      send(new_connection, success_msg, strlen(success_msg) + 1, 0);
-      printf("Received: %s\n", inc_buffer);
-      close(new_connection);
+      handle_connection(new_connection);
     }
   if (new_connection == -1)
     {

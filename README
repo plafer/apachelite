@@ -3,6 +3,18 @@
 - parser.c will build the structs from the parsed http
 - handler.c will handle the request and build a response struct
 - response.c will respond to the request
+  (501 when not-implemented method)
 
 - http_constants.h will hold all http constants
 - structs.h
+
+
+How to handle large amounts of incoming data
+***********************
+1- Parse data from buffer as it goes, building structs.
+How to handle difficult breaks, (e.g. Content-leng + th: 2323\n)
+-> save last line in temp buffer
+
+
+TODO: Clearly define structs' structure, along with how
+large amount of data will be managed.
