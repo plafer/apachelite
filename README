@@ -1,5 +1,7 @@
 - main.c will work out the CLI
 - init.c will listen on appropriate port
+- handler.c will read from socket and send it to parser.c
+  It will create the request struct and send it to parser.c
 - parser.c will build the structs from the parsed http
 - handler.c will handle the request and build a response struct
 - response.c will respond to the request
@@ -13,8 +15,22 @@ How to handle large amounts of incoming data
 ***********************
 1- Parse data from buffer as it goes, building structs.
 How to handle difficult breaks, (e.g. Content-leng + th: 2323\n)
--> save last line in temp buffer
+-> handle_connection will manage breaks and will only send relevant
+   data to parser
+   **** What if payload is bigger than buffer? arraylist.
+   => Very error prone, code harder to read (where to start
+   reading/writing in buffer array, handle_connection would
+   need to do some parsing and we don't want that
+
+2- use arraylist to capture all the content from network (what about
+   PUT requests of very large files?) -> solve for correctness
 
 
-TODO: Clearly define structs' structure, along with how
-large amount of data will be managed.
+
+Questions about http
+**********************
+How is content other than text handled? char array, but
+really is just bytes...
+TODO: include an img in index.html (with a real src, and see how
+you handle that)
+

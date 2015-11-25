@@ -1,0 +1,6 @@
+#ifndef GLOBAL_CONSTANTS_H
+#define GLOBAL_CONSTANTS_H
+
+#define INC_BUFFER_SIZE 1024
+
+#endif

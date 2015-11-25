@@ -16,7 +16,4 @@ typedef enum {HTTP09,
 	      UNKNOWN_VER} HTTP_VER;
 
 
-
-
-
 #endif
