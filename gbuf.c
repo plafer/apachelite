@@ -42,6 +42,12 @@ void gbuf_add(struct gbuf *buf, char *toadd, int toadd_size)
     }
 }
 
+void gbuf_nullterm(struct gbuf *buf)
+{
+  char nullterm[] = {'\0'};
+  gbuf_add(buf, nullterm, 1);
+}
+
 void gbuf_free(struct gbuf *buf)
 {
   free(buf->data);

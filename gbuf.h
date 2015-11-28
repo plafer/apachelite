@@ -21,9 +21,13 @@ void gbuf_init(struct gbuf *buf, int desired_size);
 
 /*
  * Add toadd to the gbuf buffer; will grow if needed.
- * Returns the buffer's size.
  */
 void gbuf_add(struct gbuf *buf, char *toadd, int toadd_size);
+
+/*
+ * Null terminates the buffer.
+ */
+void gbuf_nullterm(struct gbuf *buf);
 
 /*
  * Frees memory associated with the buffer.
