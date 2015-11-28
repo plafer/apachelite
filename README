@@ -11,22 +11,6 @@
 - structs.h
 
 
-How to handle large amounts of incoming data
-***********************
-1- Parse data from buffer as it goes, building structs.
-How to handle difficult breaks, (e.g. Content-leng + th: 2323\n)
--> handle_connection will manage breaks and will only send relevant
-   data to parser
-   **** What if payload is bigger than buffer? arraylist.
-   => Very error prone, code harder to read (where to start
-   reading/writing in buffer array, handle_connection would
-   need to do some parsing and we don't want that
-
-2- use arraylist to capture all the content from network (what about
-   PUT requests of very large files?) -> solve for correctness
-
-
-
 Questions about http
 **********************
 How is content other than text handled? char array, but

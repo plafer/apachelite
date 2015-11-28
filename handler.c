@@ -3,21 +3,26 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
+
 #include "handler.h"
+#include "parser.h"
+
 #include "structs.h"
 #include "global_constants.h"
+#include "gbuf.h"
 
 void handle_connection(int conn)
 {
   struct request conn_req;
   
-  char inc_buffer[INC_BUFFER_SIZE];
-  int amount_received = -1;
-  int receive_more = 1;
-  while (amount_received == INC_BUFFER_SIZE)
-    {
-      amount_received = recv(conn, inc_buffer, INC_BUFFER_SIZE, 0);
+  char recv_buffer[RECV_BUFFER_SIZE];
+  struct gbuf req_buffer;
+  gbuf_init(&req_buffer, 0);
 
+  int amount_received = RECV_BUFFER_SIZE;
+  while (amount_received == RECV_BUFFER_SIZE)
+    {
+      amount_received = recv(conn, recv_buffer, RECV_BUFFER_SIZE, 0);
       if (amount_received == 0)
 	{
 	  // connection is closed on other end
@@ -25,11 +30,16 @@ void handle_connection(int conn)
 	  close(conn);
 	  return;
 	}
-      
-      parse(inc_buffer, amount_received, &conn_req);
+      gbuf_add(&req_buffer, recv_buffer, amount_received);
     }
-
+  recv_buffer[0] = '\0';
+  gbuf_add(&req_buffer, recv_buffer, 1);
+  
+  parse_http(req_buffer.data, req_buffer.size, &conn_req);
+  gbuf_free(&req_buffer);
+  
   // TODO: handle request based on request method
-
+ 
+  
   close(conn);
 }

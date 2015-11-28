@@ -3,7 +3,7 @@
 
 #include "structs.h"
 
-void parse(char *buf, int size, struct request *conn_req);
+void parse_http(char *buf, int size, struct request *conn_req);
 
 
 #endif

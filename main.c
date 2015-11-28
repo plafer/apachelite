@@ -20,7 +20,6 @@ int is_valid_port(int port)
 
 int main(int argc, char **argv)
 {
-
   if (argc != 1 && argc != 3)
     {
       print_usage();
@@ -39,5 +38,7 @@ int main(int argc, char **argv)
     }
   
   create_server(port);
+
+  return 0;
 }
 

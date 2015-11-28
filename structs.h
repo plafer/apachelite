@@ -3,6 +3,7 @@
 
 #include "http_constants.h"
 
+
 struct header_node
 {
   char *name;
@@ -19,6 +20,5 @@ struct request
   struct header_node *headers;
   char *payload;
 };
-
 
 #endif
