@@ -7,7 +7,8 @@
  * Returns 0 for success, which conn_req will be properly filled;
  * non-zero if buf doesn't contain proper HTTP (401 bad request).
  * Memory: This function allocates memory inside struct request,
- * that is for uri and headers.
+ * that is for uri and headers. You need to free it with
+ * request_free.
  */
 int parse_http(char *buf, int size, struct request *conn_req);
 
