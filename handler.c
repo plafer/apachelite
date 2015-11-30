@@ -36,15 +36,16 @@ void handle_connection(int conn)
   gbuf_nullterm(&req_buffer);
   
   parse_http(req_buffer.data, req_buffer.size, &conn_req);
-  request_free(&conn_req);
-  gbuf_free(&req_buffer);
-  
+    
   // TODO: handle request based on request method
   char resp[] = "HTTP/1.1 200 Unauthorized\n"
     "Content-type: text/html\n"
     "Content-length: 10\n\n"
     "Not Found.\n\n";
   send(conn, resp, strlen(resp) + 1, 0);
-  
+
+  request_free(&conn_req);
+  gbuf_free(&req_buffer);
+
   close(conn);
 }

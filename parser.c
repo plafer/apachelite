@@ -16,11 +16,12 @@ int parse_httpversion(char *version, int size,
 
 int parse_headers(char **buf, int *size, struct request *conn_req);
 
+void skip_whitespace(char **buf, int *bufsize);
 int is_endofword(char c);
 
 /*
  * Parses a symbol in buf delimited by delimiter. Buffer pointer
- * will be moved to after the delimiter.
+ * will be moved to after the delimiter, skipping whitespaces.
  * Returns size of symbol.
  */
 int parse_symbol(char **buf, int *const bufsize, char delimiter);
@@ -31,7 +32,11 @@ int parse_http(char *buf, int size, struct request *conn_req)
     {
       return 1;
     }
-  
+
+  if (parse_headers(&buf, &size, conn_req))
+    {
+      return 1;
+    }
   
   
   return 0;
@@ -121,6 +126,10 @@ int parse_httpmethod(char *method, int size, struct request *conn_req)
 
 int parse_httpuri(char *uri, int size, struct request *conn_req)
 {
+  if (size <= 0)
+    {
+      return 1;
+    }
   conn_req->uri = malloc(sizeof(char) * size);
   strncpy(conn_req->uri, uri, size);
   return 0;
@@ -129,6 +138,11 @@ int parse_httpuri(char *uri, int size, struct request *conn_req)
 int parse_httpversion(char *version, int size,
 		      struct request *conn_req)
 {
+  if (size <= 0)
+    {
+      return 1;
+    }
+  
   if (strncmp(version, "HTTP/1.1", size))
     {
       conn_req->http_version = HTTP11;
@@ -154,8 +168,25 @@ int is_endofword(char c)
   return c == ' ' || c == '\n';
 }
 
+void skip_whitespace(char **buf, int *bufsize)
+{
+  while (*bufsize > 0)
+    {
+      if (**buf == ' ')
+	{
+	  (*buf)++;
+	  (*bufsize)--;
+	}
+      else
+	{
+	  break;
+	}
+    }
+}
+
 int parse_symbol(char **buf, int *const bufsize, char delimiter)
 {
+  skip_whitespace(buf, bufsize);
   int wordsize = 0;
   while ( (*bufsize)-- > 0 )
     {
@@ -165,6 +196,8 @@ int parse_symbol(char **buf, int *const bufsize, char delimiter)
 	}
       wordsize++;
     }
-  
+
+  skip_whitespace(buf, bufsize);
+
   return wordsize;
 }
