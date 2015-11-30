@@ -11,6 +11,19 @@
 - structs.h
 
 
+Struct request
+**************
+- Where is the memory allocated?
+- How to guarantee, when you get a struct, that it's initialized?
+
+Prop 1: Use gbuf for header_node list and uri. Have a
+     	request_init function
+Prop 2: Have additional boolean fields (for initialized or not)
+     	- Probably worst design possible
+Prop 3: Trust that parser allocates and handler frees?
+     	- Looks really bug prone
+
+
 Questions about http
 **********************
 How is content other than text handled? char array, but

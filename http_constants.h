@@ -8,7 +8,8 @@ typedef enum {OPTIONS,
 	      PUT,
 	      DELETE,
 	      TRACE,
-	      CONNECT} HTTP_METHOD;
+	      CONNECT,
+	      EXTENSION} HTTP_METHOD;
 
 typedef enum {HTTP09,
 	      HTTP10,

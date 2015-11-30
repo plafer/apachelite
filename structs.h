@@ -21,4 +21,8 @@ struct request
   char *payload;
 };
 
+void request_init(struct request *req);
+void request_free(struct request *req);
+
+
 #endif

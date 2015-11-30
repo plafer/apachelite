@@ -14,7 +14,8 @@
 void handle_connection(int conn)
 {
   struct request conn_req;
-  
+  request_init(&conn_req);
+
   char recv_buffer[RECV_BUFFER_SIZE];
   struct gbuf req_buffer;
   gbuf_init(&req_buffer, 0);
@@ -32,14 +33,18 @@ void handle_connection(int conn)
 	}
       gbuf_add(&req_buffer, recv_buffer, amount_received);
     }
-  recv_buffer[0] = '\0';
-  gbuf_add(&req_buffer, recv_buffer, 1);
+  gbuf_nullterm(&req_buffer);
   
   parse_http(req_buffer.data, req_buffer.size, &conn_req);
+  request_free(&conn_req);
   gbuf_free(&req_buffer);
   
   // TODO: handle request based on request method
- 
+  char resp[] = "HTTP/1.1 200 Unauthorized\n"
+    "Content-type: text/html\n"
+    "Content-length: 10\n\n"
+    "Not Found.\n\n";
+  send(conn, resp, strlen(resp) + 1, 0);
   
   close(conn);
 }
