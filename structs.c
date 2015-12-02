@@ -23,6 +23,7 @@ void request_init(struct request *req)
 {
   req->uri = NULL;
   req->headers = NULL;
+  req->payload = NULL;
 }
 
 void request_add_header(struct request *req, struct header_node *header)
@@ -34,6 +35,7 @@ void request_add_header(struct request *req, struct header_node *header)
 void request_free(struct request *req)
 {
   free(req->uri);
+  free(req->payload);
   struct header_node *next_header;
   while (req->headers != NULL)
     {
