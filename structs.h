@@ -11,6 +11,12 @@ struct header_node
   struct header_node *next;
 };
 
+/*
+ * Constructs a header node. namelen & valuelen are lengths that
+ * would be returned from strlen; that is, without the null character.
+ */
+struct header_node *construct_header_node(char *name, int namelen,
+					  char *value, int valuelen);
 
 struct request
 {
@@ -22,6 +28,7 @@ struct request
 };
 
 void request_init(struct request *req);
+void request_add_header(struct request *req, struct header_node *name);
 void request_free(struct request *req);
 
 

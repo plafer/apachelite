@@ -1,6 +1,9 @@
 #ifndef HTTP_CONSTANTS_H
 #define HTTP_CONSTANTS_H
 
+#define HTTP_REQUEST_HEADERS_SIZE 28
+extern const char *const HTTP_REQUEST_HEADERS[];
+
 typedef enum {OPTIONS,
 	      GET,
 	      HEAD,

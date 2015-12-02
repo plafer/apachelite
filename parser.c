@@ -5,6 +5,7 @@
 #include "global_constants.h"
 #include "structs.h"
 #include "http_constants.h"
+#include "util.h"
 
 #include <stdio.h> /* TODO: REMOVE */
 
@@ -49,21 +50,21 @@ int parse_statusline(char **buf, int *const size,
   char *symbol = *buf;
   int symbol_size = parse_symbol(buf, size, ' ');
   
-  if (parse_httpmethod(symbol, symbol_size, conn_req))
+  if (*size <= 0 || parse_httpmethod(symbol, symbol_size, conn_req))
     {
       return 1;
     }
 
   symbol = *buf;
   symbol_size = parse_symbol(buf, size, ' ');
-  if (parse_httpuri(symbol, symbol_size, conn_req))
+  if (*size <= 0 || parse_httpuri(symbol, symbol_size, conn_req))
     {
       return 1;
     }
 
   symbol = *buf;
   symbol_size = parse_symbol(buf, size, '\n');
-  if (parse_httpversion(symbol, symbol_size, conn_req))
+  if (*size <= 0 || parse_httpversion(symbol, symbol_size, conn_req))
     {
       return 1;
     }
@@ -73,8 +74,45 @@ int parse_statusline(char **buf, int *const size,
 
 int parse_headers(char **buf, int *size, struct request *conn_req)
 {
+  char *hname, *hval;
+  int hname_size, hval_size;
+  while (**buf != '\n')
+    {
+      // header name
+      hname = *buf;
+      hname_size = parse_symbol(buf, size, ':');
+      if (*size <= 0)
+	{
+	  return 1;
+	}
+      str_tolower(hname, hname_size);
+
+      // header value
+      hval = *buf;
+      hval_size = parse_symbol(buf, size, '\n');
+      if (*size <= 0)
+	{
+	  return 1;
+	}
+
+      if (!str_ismemberof(HTTP_REQUEST_HEADERS,
+			  HTTP_REQUEST_HEADERS_SIZE,
+			  hname,
+			  hname_size))
+	{
+	  // If header not known, simply skip it.
+	  continue;
+	}
+
+      // construct header
+      struct header_node *header = construct_header_node(hname,
+							 hname_size,
+							 hval,
+							 hval_size);
+      request_add_header(conn_req, header);
+    }
   
-    
+  (*buf)++;
   return 0;
 }
 
@@ -126,12 +164,14 @@ int parse_httpmethod(char *method, int size, struct request *conn_req)
 
 int parse_httpuri(char *uri, int size, struct request *conn_req)
 {
+  // TODO: PARSE QUERY STRING IF GET REQUEST
   if (size <= 0)
     {
       return 1;
     }
-  conn_req->uri = malloc(sizeof(char) * size);
+  conn_req->uri = malloc(sizeof(char) * size + 1);
   strncpy(conn_req->uri, uri, size);
+  conn_req->uri[size] = '\0';
   return 0;
 }
 
