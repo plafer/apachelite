@@ -39,7 +39,6 @@ int parse_http(char *buf, int size, struct request *conn_req)
       return 1;
     }
   
-  
   return 0;
 }
 

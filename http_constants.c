@@ -25,5 +25,15 @@ const char *const HTTP_REQUEST_HEADERS[] = {"cache-control",
 					    "range",
 					    "referer",
 					    "te",
-					    "user-agent"
+					    "user-agent",
+					    "allow",
+					    "content-encoding",
+					    "content-language",
+					    "content-length",
+					    "content-location",
+					    "content-md5",
+					    "content-range",
+					    "content-type",
+					    "expires",
+					    "last-modified"
 };
