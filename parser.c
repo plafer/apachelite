@@ -38,7 +38,15 @@ int parse_http(char *buf, int size, struct request *conn_req)
     {
       return 1;
     }
+
+  // Check if there is no payload with the request
+  if (strlen(buf) == 0)
+    {
+      return 0;
+    }
+
   
+
   return 0;
 }
 
@@ -62,7 +70,7 @@ int parse_statusline(char **buf, int *const size,
     }
 
   symbol = *buf;
-  symbol_size = parse_symbol(buf, size, '\n');
+  symbol_size = parse_symbol(buf, size, '\r');
   if (*size <= 0 || parse_httpversion(symbol, symbol_size, conn_req))
     {
       return 1;
@@ -75,7 +83,7 @@ int parse_headers(char **buf, int *size, struct request *conn_req)
 {
   char *hname, *hval;
   int hname_size, hval_size;
-  while (**buf != '\n')
+  while (**buf != '\r')
     {
       // header name
       hname = *buf;
@@ -88,7 +96,7 @@ int parse_headers(char **buf, int *size, struct request *conn_req)
 
       // header value
       hval = *buf;
-      hval_size = parse_symbol(buf, size, '\n');
+      hval_size = parse_symbol(buf, size, '\r');
       if (*size <= 0)
 	{
 	  return 1;
@@ -109,9 +117,12 @@ int parse_headers(char **buf, int *size, struct request *conn_req)
 							 hval,
 							 hval_size);
       request_add_header(conn_req, header);
+
     }
-  
-  (*buf)++;
+
+  // Remove CRLF
+  (*buf) += 2;
+  (*size) -= 2;
   return 0;
 }
 
@@ -231,6 +242,11 @@ int parse_symbol(char **buf, int *const bufsize, char delimiter)
     {
       if ( *(*buf)++ == delimiter )
 	{
+	  if (delimiter == '\r' && **buf == '\n')
+	    {
+	      (*buf)++;
+	      (*bufsize)--;
+	    }
 	  break;
 	}
       wordsize++;

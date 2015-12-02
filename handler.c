@@ -36,7 +36,7 @@ void handle_connection(int conn)
   gbuf_nullterm(&req_buffer);
   
   parse_http(req_buffer.data, req_buffer.size, &conn_req);
-    
+
   // TODO: handle request based on request method
   char resp[] = "HTTP/1.1 200 Unauthorized\n"
     "Content-type: text/html\n"
