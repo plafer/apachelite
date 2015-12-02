@@ -16,6 +16,7 @@ int parse_httpversion(char *version, int size,
 		      struct request *conn_req);
 
 int parse_headers(char **buf, int *size, struct request *conn_req);
+int parse_payload(char *buf, int size, struct request *conn_req);
 
 void skip_whitespace(char **buf, int *bufsize);
 int is_endofword(char c);
@@ -39,13 +40,16 @@ int parse_http(char *buf, int size, struct request *conn_req)
       return 1;
     }
 
-  // Check if there is no payload with the request
+  // Check if there is a payload with the request
   if (strlen(buf) == 0)
     {
       return 0;
     }
 
-  
+  if (parse_payload(buf, size, conn_req))
+    {
+      return 1;
+    }
 
   return 0;
 }
@@ -212,6 +216,23 @@ int parse_httpversion(char *version, int size,
   return 0;
 }
 
+int parse_payload(char *buf, int size, struct request *conn_req)
+{
+  if (size <= 1)
+    {
+      return 1;
+    }
+  if ((conn_req->payload = malloc (sizeof(char) * size)) == NULL)
+    {
+      // TODO: This is a bad strategy; this should be treated as a
+      // 500 internal error, but it's going to be seen as 400s
+      return 1;
+    }
+  strncpy(conn_req->payload, buf, size);
+  conn_req->payload[size - 1] = '\0';
+
+  return 0;
+}
       
 int is_endofword(char c)
 {
