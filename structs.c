@@ -2,10 +2,10 @@
 #include <string.h>
 #include "structs.h"
 
-struct header_node *construct_header_node(char *name, int namelen,
+struct map_node *construct_map_node(char *name, int namelen,
 					  char *value, int valuelen)
 {
-  struct header_node *node = malloc(sizeof(struct header_node));
+  struct map_node *node = malloc(sizeof(struct map_node));
 
   node->name = malloc(sizeof(char) * namelen + 1);
   strncpy(node->name, name, namelen);
@@ -26,7 +26,7 @@ void request_init(struct request *req)
   req->payload = NULL;
 }
 
-void request_add_header(struct request *req, struct header_node *header)
+void request_add_header(struct request *req, struct map_node *header)
 {
   header->next = req->headers;
   req->headers = header;
@@ -36,7 +36,7 @@ void request_free(struct request *req)
 {
   free(req->uri);
   free(req->payload);
-  struct header_node *next_header;
+  struct map_node *next_header;
   while (req->headers != NULL)
     {
       next_header = req->headers->next;

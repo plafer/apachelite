@@ -12,6 +12,7 @@
 int parse_statusline(char **buf, int *size, struct request *conn_req);
 int parse_httpmethod(char *method, int size, struct request *conn_req);
 int parse_httpuri(char *uri, int size, struct request *conn_req);
+int parse_httpquerystr(char *query, int size, struct request *conn_req);
 int parse_httpversion(char *version, int size,
 		      struct request *conn_req);
 
@@ -116,12 +117,11 @@ int parse_headers(char **buf, int *size, struct request *conn_req)
 	}
 
       // construct header
-      struct header_node *header = construct_header_node(hname,
-							 hname_size,
-							 hval,
-							 hval_size);
+      struct map_node *header = construct_map_node(hname,
+						   hname_size,
+						   hval,
+						   hval_size);
       request_add_header(conn_req, header);
-
     }
 
   // Remove CRLF
@@ -186,6 +186,12 @@ int parse_httpuri(char *uri, int size, struct request *conn_req)
   conn_req->uri = malloc(sizeof(char) * size + 1);
   strncpy(conn_req->uri, uri, size);
   conn_req->uri[size] = '\0';
+  return 0;
+}
+
+int parse_httpquerystr(char *query, int size, struct request *conn_req)
+{
+
   return 0;
 }
 
