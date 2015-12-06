@@ -12,10 +12,10 @@ struct map_node
 };
 
 /*
- * Constructs a header node. namelen & valuelen are lengths that
+ * Constructs a header node. keylen & valuelen are lengths that
  * would be returned from strlen; that is, without the null character.
  */
-struct map_node *construct_map_node(char *name, int namelen,
+struct map_node *construct_map_node(char *key, int keylen,
 					  char *value, int valuelen);
 
 struct request
@@ -30,6 +30,7 @@ struct request
 
 void request_init(struct request *req);
 void request_add_header(struct request *req, struct map_node *name);
+void request_add_queryparam(struct request *req, struct map_node *name);
 void request_free(struct request *req);
 
 

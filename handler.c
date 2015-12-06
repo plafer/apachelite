@@ -40,7 +40,7 @@ void handle_connection(int conn)
   // TODO: handle request based on request method
   char resp[] = "HTTP/1.1 200 Unauthorized\n"
     "Content-type: text/html\n"
-    "Content-length: 10\n\n"
+    "Content-length: 12\n\n"
     "Not Found.\n\n";
   send(conn, resp, strlen(resp) + 1, 0);
 
