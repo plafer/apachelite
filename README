@@ -11,6 +11,16 @@
 - structs.h
 
 
+How to create response
+***********************
+- have a handle_request() function, which can forward to
+ handle_get, handle_post, etc.
+  - Then, in these functions, you know you are dealing with a
+    get/post/etc
+- These can build the whole response
+- Right after, you can send it to response.c
+
+
 Questions about http
 **********************
 How is content other than text handled? char array, but
