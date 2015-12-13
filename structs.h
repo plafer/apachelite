@@ -33,5 +33,22 @@ void request_add_header(struct request *req, struct map_node *name);
 void request_add_queryparam(struct request *req, struct map_node *name);
 void request_free(struct request *req);
 
+struct response
+{
+  HTTP_VER http_version;
+  char *status_code;
+  char *reason_phrase;
+  struct map_node *headers;
+  char *payload;
+};
 
+void response_init(struct response *res);
+
+void response_add_header(struct response *res, struct map_node *name);
+
+/*
+ * Resets enums, and frees headers and payload;
+ * status_code and reason_phrase should be string constants.
+ */
+void response_free(struct response *res);
 #endif

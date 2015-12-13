@@ -61,6 +61,33 @@ void request_free(struct request *req)
   req->query_params = NULL;
 }
 
+void response_init(struct response *res)
+{
+  res->http_version = ENUM_DEFAULT_VALUE;
+  res->status_code = NULL;
+  res->reason_phrase = NULL;
+  res->headers = NULL;
+  res->payload = NULL;
+}
+
+void response_add_header(struct response *res, struct map_node *header)
+{
+  header->next = res->headers;
+  res->headers = header;  
+}
+
+void response_free(struct response *res)
+{
+  res->http_version = ENUM_DEFAULT_VALUE;
+  res->status_code = NULL;
+  res->reason_phrase = NULL;
+  
+  free_map_list(res->headers);
+  res->headers = NULL;
+  free(res->payload);
+  res->payload = NULL;
+}
+
 void free_map_list(struct map_node *head)
 {
   struct map_node *next;
@@ -73,3 +100,5 @@ void free_map_list(struct map_node *head)
       head = next;
     }
 }
+
+
