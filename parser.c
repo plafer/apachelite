@@ -7,7 +7,7 @@
 #include "http_constants.h"
 #include "util.h"
 
-#include <stdio.h> /* TODO: REMOVE */
+#include <stdio.h>
 
 int parse_statusline(char **buf, int *size, struct request *conn_req);
 int parse_httpmethod(char *method, int size, struct request *conn_req);
@@ -16,7 +16,8 @@ int parse_httpuri(char *uri, int size, struct request *conn_req);
 /*
  * Parses query string, starting AFTER the '?' delimiter.
  */
-int parse_httpqueryparams(char *query, int size, struct request *conn_req);
+int parse_httpqueryparams(char *query, int size,
+			  struct request *conn_req);
 int parse_httpversion(char *version, int size,
 		      struct request *conn_req);
 
