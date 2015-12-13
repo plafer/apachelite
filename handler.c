@@ -14,6 +14,7 @@
 #include "standard_responses.h"
 #include "gbuf.h"
 #include "util.h"
+#include "response.h"
 
 void handle_request(struct request *conn_req,
 		    struct response *conn_resp);
@@ -60,17 +61,8 @@ void handle_connection(int conn)
 
   handle_request(&conn_req, &conn_resp);
 
-  printf("Status code: %s\n", conn_resp.status_code);
-  printf("Reason phrase: %s\n", conn_resp.reason_phrase);
-  printf("payload: %s\n", conn_resp.payload);
+  send_httpresponse(&conn_resp, conn);
   
-  // TODO: handle request based on request method
-  char resp[] = "HTTP/1.1 200 Unauthorized\n"
-    "Content-type: text/html\n"
-    "Content-length: 12\n\n"
-    "Not Found.\n\n";
-  send(conn, resp, strlen(resp) + 1, 0);
-
   request_free(&conn_req);
   response_free(&conn_resp);
   gbuf_free(&req_buffer);
