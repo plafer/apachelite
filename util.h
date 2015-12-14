@@ -1,6 +1,8 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#include <stddef.h>
+
 /*
  * Searches arr to find if it can find target.
  * Returns 1 on success, 0 otherwise.
@@ -16,10 +18,15 @@ void str_tolower(char *str, int len);
 
 /*
  * Reads file with file_name, allocates appropriate memory and sets
- * file_contents. 
+ * file_contents. Sets fsize to the size of the file.
+ * All files will be null-terminated; however, fsize doesn't take
+ * the null-terminating character into account. This way, image files
+ * for instance simply ignore the null, and strlen will still
+ * work on contents of text files.
  * Returns non-zero on error.
  */
-int get_file_contents(char *file_name, char **file_contents);
+int get_file_contents(char *file_name, char **file_contents,
+		      size_t *fsize);
 
 int is_number(char *str);
 

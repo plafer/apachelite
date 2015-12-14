@@ -54,8 +54,10 @@ int is_number(char *str)
   return 1;
 }
 
-int get_file_contents(char *file_name, char **file_contents)
+int get_file_contents(char *file_name, char **file_contents,
+		      size_t *fsize)
 {
+  *fsize = 0;
   FILE *target_file;
   if ((target_file = fopen(file_name, "r")) == NULL)
     {
@@ -67,9 +69,8 @@ int get_file_contents(char *file_name, char **file_contents)
       fclose(target_file);
       return 1;
     }
-
-  long fsize = 0L;
-  if ((fsize = ftell(target_file)) == -1)
+  size_t fsize_temp;
+  if ((fsize_temp = ftell(target_file)) == -1)
     {
       fclose(target_file);
       return 1;
@@ -77,14 +78,14 @@ int get_file_contents(char *file_name, char **file_contents)
   rewind(target_file);
 
   char *file_contents_temp;
-  if ((file_contents_temp = malloc(fsize + 1)) == NULL)
+  if ((file_contents_temp = malloc(fsize_temp + 1)) == NULL)
     {
       fclose(target_file);
       return 1;
     }
-  memset(file_contents_temp, '\0', fsize + 1);
+  memset(file_contents_temp, '\0', fsize_temp + 1);
 
-  fread(file_contents_temp, 1, fsize, target_file);
+  fread(file_contents_temp, 1, fsize_temp, target_file);
   if (ferror(target_file))
     {
       free(file_contents_temp);
@@ -92,8 +93,9 @@ int get_file_contents(char *file_name, char **file_contents)
       return 1;
     }
 
-  file_contents_temp[fsize] = '\0';
+  file_contents_temp[fsize_temp] = '\0';
 
+  *fsize = fsize_temp;
   *file_contents = file_contents_temp;
   fclose(target_file);
   return 0;
