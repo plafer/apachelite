@@ -38,4 +38,10 @@ int pathcat(char *path1, char *path2, char *result_path);
  */
 int ispath(char *path);
 
+/*
+ * Returns a pointer of the extension within path, or empty string
+ * if path has no extension.
+ */
+char *get_ext(char *path);
+
 #endif

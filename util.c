@@ -147,3 +147,21 @@ int ispath(char *path)
     }
   return 1;
 }
+
+char *get_ext(char *path)
+{
+  if (path == NULL || *path == '\0')
+    {
+      return "";
+    }
+
+  // path + 1 to avoid names like .git
+  // the second strchr is to avoid paths like /foo.s/bleh
+  char *dot;
+  if ((dot = strrchr(path + 1, '.')) == NULL ||
+      strchr(dot, '/') != NULL)
+    {
+      return "";
+    }
+  return dot + 1;
+}
