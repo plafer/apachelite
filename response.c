@@ -54,7 +54,7 @@ int send_httpresponse(struct response *conn_resp, int conn)
 	}
       gbuf_add(&response_gbuf, "\r\n", 2);
       gbuf_add(&response_gbuf, conn_resp->payload,
-	       strlen(conn_resp->payload));
+	       conn_resp->payload_size);
       gbuf_nullterm(&response_gbuf);
     }
 

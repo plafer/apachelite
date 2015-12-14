@@ -68,6 +68,7 @@ void response_init(struct response *res)
   res->reason_phrase = NULL;
   res->headers = NULL;
   res->payload = NULL;
+  res->payload_size = 0L;
 }
 
 void response_add_header(struct response *res, struct map_node *header)
@@ -86,6 +87,7 @@ void response_free(struct response *res)
   res->headers = NULL;
   free(res->payload);
   res->payload = NULL;
+  res->payload_size = 0L;
 }
 
 void free_map_list(struct map_node *head)

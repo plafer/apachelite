@@ -126,8 +126,9 @@ void handle_get(struct request *conn_req,
 void build_generalresponse(struct response *conn_resp, char *file_name,
 			   char *status_code, char *reason_phrase)
 {
-  size_t file_size = 0;
-  if (get_file_contents(file_name, &conn_resp->payload, &file_size))
+  
+  if (get_file_contents(file_name, &conn_resp->payload,
+			&conn_resp->payload_size))
     {
       build_generalresponse(conn_resp, STANDARD_500,
 			    "500", "Internal Server Error");
@@ -149,7 +150,7 @@ void build_generalresponse(struct response *conn_resp, char *file_name,
   char *contentlen_key = "Content-Length";
   char contentlen_value[20];
   // Yes yes, server won't handle large files
-  sprintf(contentlen_value, "%ld", file_size);
+  sprintf(contentlen_value, "%ld", conn_resp->payload_size);
 
   struct map_node *contentlen_node =
     construct_map_node(contentlen_key, strlen(contentlen_key),

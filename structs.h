@@ -2,7 +2,7 @@
 #define STRUCTS_H
 
 #include "http_constants.h"
-
+#include <stddef.h>
 
 struct map_node
 {
@@ -40,6 +40,7 @@ struct response
   char *reason_phrase;
   struct map_node *headers;
   char *payload;
+  size_t payload_size;
 };
 
 void response_init(struct response *res);
