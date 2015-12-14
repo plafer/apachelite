@@ -21,3 +21,13 @@ construction. Here's a quick list of what it currently supports.
 + PHP
 + Keep-alive connections
 + One connection, one process
+
+## Building and Running
+Building is pretty standard. `cd` into the directory.
+
+    make
+
+This will create an executable named apachelite. Run it using
+
+    ./apachelite -p 3000
+
