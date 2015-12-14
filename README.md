@@ -1,7 +1,7 @@
 # Apachelite
-Apachelite is a *very* basic HTTP server written in C. Its sole purpose
-is to give me practice in C, and know the ins and outs of HTTP. I find
-it very interesting and instructive to decorticate how an HTTP server
+Apachelite is a *very* basic HTTP server written in C. I wrote it to
+practice writing in C and to know the ins and outs of HTTP. I find it
+very interesting and instructive to decorticate how an HTTP server
 really works.
 
 ## Features
