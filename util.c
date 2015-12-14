@@ -165,3 +165,41 @@ char *get_ext(char *path)
     }
   return dot + 1;
 }
+
+char *get_mimetype(char *ext)
+{
+  if (ext == NULL || *ext == '\0')
+    {
+      return "text/plain";
+    }
+
+  int ext_len = strlen(ext);
+  char *local_ext = malloc(ext_len + 1);
+  strncpy(local_ext, ext, ext_len);
+  local_ext[ext_len] = '\0';
+  str_tolower(local_ext, ext_len);
+
+  char *mime = NULL;
+  if (strncmp(local_ext, "html", ext_len) == 0)
+    {
+      mime = "text/html";
+    }
+  else if (strncmp(local_ext, "gif", ext_len) == 0)
+    {
+      mime = "image/gif";
+    }
+  else if (strncmp(local_ext, "jpg", ext_len) == 0)
+    {
+      mime = "image/jpeg";
+    }
+  else if (strncmp(local_ext, "png", ext_len) == 0)
+    {
+      mime = "image/png";
+    }
+  else
+    {
+      mime = "text/plain";
+    }
+  free(local_ext);
+  return mime;
+}

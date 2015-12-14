@@ -44,4 +44,10 @@ int ispath(char *path);
  */
 char *get_ext(char *path);
 
+/*
+ * Returns a string literal of the mime type describing
+ * the extension ext. Returns text/plain for unsupported extensions.
+ */
+char *get_mimetype(char *ext);
+
 #endif
