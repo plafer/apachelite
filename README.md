@@ -29,5 +29,5 @@ Building is pretty standard. `cd` into the directory.
 
 This will create an executable named apachelite. Run it using
 
-    ./apachelite -p 3000
+    ./apachelite -p PORT
 
