@@ -33,7 +33,7 @@ int is_number(char *str);
 /*
  * Concatenates path1 with path2, and places the result
  * in result_path. result_path's memory must be allocated,
- * and is the sum of both paths sizes (including null terminating char).
+ * and be the sum of both path sizes (including null terminating char).
  * It is assumed path1 and path2 are valid paths, which can
  * be checked with ispath(1).
  * Returns non-zero on error.

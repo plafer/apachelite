@@ -94,20 +94,26 @@ void handle_get(struct request *conn_req,
       return;
     }
 
-  char *default_page = "";
-  if(conn_req->uri[strlen(conn_req->uri) - 1] == '/')
+  int uri_is_file = conn_req->uri[strlen(conn_req->uri) - 1] != '/';
+  char *req_path = NULL;
+  int req_path_len = 0;
+  if(!uri_is_file)
     {
-      default_page = DEFAULT_PAGE_NAME;
+      req_path_len = strlen(SERVER_ROOT_DIRECTORY) +
+	strlen(conn_req->uri) + strlen(DEFAULT_PAGE_NAME) + 3;
+    }
+  else
+    {
+      req_path_len = strlen(SERVER_ROOT_DIRECTORY) +
+	strlen(conn_req->uri) + 2;
     }
   
-  int req_path_len = strlen(SERVER_ROOT_DIRECTORY) +
-    strlen(conn_req->uri) + strlen(default_page) + 3;
-  char *req_path = malloc(req_path_len);
+  req_path = malloc(req_path_len);
   memset(req_path, '\0', req_path_len);
   pathcat(SERVER_ROOT_DIRECTORY, conn_req->uri, req_path);
-  if (ispath(default_page))
+  if (!uri_is_file)
     {
-      pathcat(req_path, default_page, req_path);
+      strncat(req_path, DEFAULT_PAGE_NAME, strlen(DEFAULT_PAGE_NAME));
     }
 
   if (access(req_path, R_OK) != 0)
