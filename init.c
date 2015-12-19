@@ -8,7 +8,7 @@
 #include "init.h"
 #include "handler.h"
 
-static const int BACKLOG = 10;
+static const int BACKLOG = 100;
 
 int create_server(int port)
 {
@@ -64,7 +64,7 @@ int create_server(int port)
         perror("accept");
 	exit(1);
     }
-  
+  close(listenersock);
 
   return 1;
 }
