@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h> /* close */
+
 #include "init.h"
 #include "handler.h"
 
@@ -58,6 +59,7 @@ int create_server(int port)
 			       &ext_addr_size)) != -1)
     {
       handle_connection(new_connection);
+      close(new_connection);
     }
   if (new_connection == -1)
     {
