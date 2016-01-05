@@ -5,9 +5,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h> /* close */
+#include <sys/epoll.h>
 
 #include "init.h"
 #include "handler.h"
+
+#define MAX_EVENTS 1
 
 static const int BACKLOG = 100;
 
@@ -49,24 +52,43 @@ int create_server(int port)
     }
   printf("Rock and Rollin'\n");
 
-  int new_connection;
-  struct sockaddr_in ext_addr;
-  unsigned int ext_addr_size = sizeof(struct sockaddr_in);
-
-  // Consider forking all new connections
-  while ((new_connection = accept(listenersock,
-			       (struct sockaddr *) &ext_addr,
-			       &ext_addr_size)) != -1)
+  int epollfd;
+  if ((epollfd = epoll_create(1)) == -1)
     {
+      perror("epoll_create");
+      exit(1);
+    }
+  
+  struct epoll_event epevent;
+  epevent.events = EPOLLIN;
+  epoll_ctl(epollfd, EPOLL_CTL_ADD, listenersock, &epevent);
+
+  struct epoll_event listen_event;
+  while (1)
+    {
+      // This will only work if MAX_EVENTS == 1
+      int numfds = epoll_wait(epollfd, &listen_event, MAX_EVENTS, -1);
+      if (numfds == -1)
+	{
+	  perror("epoll_wait");
+	  exit(1);
+	}
+
+      // Since only one fd is polled, we know it's the listening socket
+      int new_connection;
+      struct sockaddr_in ext_addr;
+      unsigned int ext_addr_size = sizeof(struct sockaddr_in);
+
+      if ((new_connection = accept(listenersock,
+				   (struct sockaddr *) &ext_addr,
+				      &ext_addr_size)) == -1)
+	{
+	  perror("accept");
+	  exit(1);
+	}
       handle_connection(new_connection);
       close(new_connection);
     }
-  if (new_connection == -1)
-    {
-        perror("accept");
-	exit(1);
-    }
-  close(listenersock);
 
   return 1;
 }
