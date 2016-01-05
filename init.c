@@ -5,8 +5,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h> /* close */
+#include <sys/epoll.h>
+
+#include <sys/types.h> /* wait */
+#include <sys/wait.h> /* wait */
+
 #include "init.h"
 #include "handler.h"
+
+#define MAX_EVENTS 1
+
+void reap_children(int *num_children);
+
 
 static const int BACKLOG = 100;
 
@@ -48,23 +58,85 @@ int create_server(int port)
     }
   printf("Rock and Rollin'\n");
 
-  int new_connection;
-  struct sockaddr_in ext_addr;
-  unsigned int ext_addr_size = sizeof(struct sockaddr_in);
+  int epollfd;
+  if ((epollfd = epoll_create(1)) == -1)
+    {
+      perror("epoll_create");
+      exit(1);
+    }
+  
+  struct epoll_event epevent;
+  epevent.events = EPOLLIN;
+  epoll_ctl(epollfd, EPOLL_CTL_ADD, listenersock, &epevent);
 
-  // Consider forking all new connections
-  while ((new_connection = accept(listenersock,
-			       (struct sockaddr *) &ext_addr,
-			       &ext_addr_size)) != -1)
+  struct epoll_event listen_event;
+  int num_children = 0;
+  while (1)
     {
-      handle_connection(new_connection);
+      // This will only work if MAX_EVENTS == 1
+      int numfds = epoll_wait(epollfd, &listen_event, MAX_EVENTS, 1000);
+      if (numfds == -1)
+	{
+	  perror("epoll_wait");
+	  exit(1);
+	}
+
+      if (numfds > 0)
+	{
+	  // Since only one fd is polled,
+	  // we know it's the listening socket
+	  int new_connection;
+	  struct sockaddr_in ext_addr;
+	  unsigned int ext_addr_size = sizeof(struct sockaddr_in);
+
+	  if ((new_connection = accept(listenersock,
+				       (struct sockaddr *) &ext_addr,
+				       &ext_addr_size)) == -1)
+	    {
+	      perror("accept");
+	      exit(1);
+	    }
+	  int fork_ret;
+	  if ((fork_ret = fork()) == 0)
+	    {
+	      handle_connection(new_connection);
+	      close(new_connection);
+	      break;
+	    }
+	  else if (fork_ret == -1)
+	    {
+	      perror("fork");
+	    }
+	  else
+	    {
+	      close(new_connection);
+	      num_children++;
+	    }
+	}
+
+      // children never get here
+      if (num_children > 0)
+	{
+	  reap_children(&num_children);
+	}
     }
-  if (new_connection == -1)
-    {
-        perror("accept");
-	exit(1);
-    }
+
   close(listenersock);
 
   return 1;
+}
+
+void reap_children(int *num_children)
+{
+  int wait_ret = 0;
+  while (*num_children > 0 &&
+	 (wait_ret = waitpid(-1, NULL, WNOHANG)) > 0)
+    {
+      (*num_children)--;
+    }
+  if (wait_ret == -1)
+    {
+      perror("waitpid");
+      exit(1);
+    }
 }

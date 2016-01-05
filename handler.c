@@ -66,8 +66,6 @@ void handle_connection(int conn)
   request_free(&conn_req);
   response_free(&conn_resp);
   gbuf_free(&req_buffer);
-
-  close(conn);
 }
 
 void handle_request(struct request *conn_req,
