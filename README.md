@@ -1,4 +1,4 @@
-# Apachelite v0.1
+# Apachelite
 Apachelite is a *very* basic HTTP server written in C. I wrote it to
 practice writing in C and to learn about the ins and outs of HTTP.
 
